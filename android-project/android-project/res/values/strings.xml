@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="adress_ip">192.168.1.23</string>
+	<string name="port">8060</string>
+	<string name="app_name">投影仪客户端</string>
+    <string name="action_settings">Settings</string>
+    <string name="ipaddress">请连接此IP地址：%1$s</string>
+</resources>
