@@ -14,9 +14,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    qDebug2Logcat.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    qDebug2Logcat.h
 
 FORMS    += mainwindow.ui
 

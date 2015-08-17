@@ -19,12 +19,31 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>301</width>
-      <height>41</height>
+      <width>761</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>40</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>请连接此IP地址：</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>160</y>
+      <width>201</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="text">
-     <string>请连接当前IP：</string>
+     <string>PushButton</string>
     </property>
    </widget>
   </widget>

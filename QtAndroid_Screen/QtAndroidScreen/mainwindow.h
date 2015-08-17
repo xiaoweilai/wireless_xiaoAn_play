@@ -15,7 +15,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
+
+private slots:
+    void on_pushButton_clicked();
     void showifconfig(void);
+    QString Getifconfig(void);
 
 private:
     Ui::MainWindow *ui;
