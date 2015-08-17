@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/wirelessPlayer/wirelessPlayer.iml" filepath="$PROJECT_DIR$/wirelessPlayer/wirelessPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/wirelessPlayer.bmp.iml" filepath="$PROJECT_DIR$/wirelessPlayer.bmp.iml" />
     </modules>
   </component>
 </project>
-

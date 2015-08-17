@@ -4,9 +4,9 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
-        <option name="externalProjectPath" value="D:\git\wireless_xiaoAn_play\wirelessPlayer.bmp" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="1.7" />
       </GradleProjectSettings>
     </option>
   </component>
 </project>
-
