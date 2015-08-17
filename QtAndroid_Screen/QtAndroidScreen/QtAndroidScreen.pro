@@ -25,3 +25,15 @@ FORMS    += mainwindow.ui
 CONFIG += mobility
 MOBILITY = 
 
+INCLUDEPATH += ./include
+LIBS +=-LD:\git\wireless_xiaoAn_play\QtAndroid_Screen\QtAndroidScreen\libs -lavformat -lavcodec -lavcore -lavdevice  -lavutil -lswscale
+#LIBS +=-L./libs -lavcodec -lavcore -lavdevice -lavformat -lavutil -lswscale
+
+OTHER_FILES += \
+    libs/libavcodec.a \
+    libs/libavcore.a \
+    libs/libavdevice.a \
+    libs/libavfilter.a \
+    libs/libavformat.a \
+    libs/libavutil.a \
+    libs/libswscale.a

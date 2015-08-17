@@ -5,7 +5,58 @@
 #include <QProcess>
 #include <QNetworkInterface>
 #include <QMessageBox>
+#include <QBuffer>
+#include <QImageReader>
 #include "qDebug2Logcat.h"
+
+
+#define MAINWORKING
+#ifdef MAINWORKING
+
+extern "C"{
+#ifdef __cplusplus
+ #define __STDC_CONSTANT_MACROS
+ #ifdef _STDINT_H
+  #undef _STDINT_H
+ #endif
+ # include <stdint.h>
+#endif
+}
+
+//Windows
+extern "C"
+{
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libswscale/swscale.h"
+#include "libavdevice/avdevice.h"
+#include "libavutil/opt.h"
+#include "libavcodec/avcodec.h"
+//#include "libavutil/channel_layout.h"
+#include "libavutil/common.h"
+//#include "libavutil/imgutils.h"
+#include "libavutil/mathematics.h"
+//#include "libavutil/samplefmt.h"
+//#include "SDL/SDL.h"
+//#include "SDL/SDL_main.h"
+};
+#else
+//Linux...
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#include <libavdevice/avdevice.h>
+//#include <SDL/SDL.h>
+#ifdef __cplusplus
+};
+#endif
+#endif
+
+
 
 #if 1
 //编码汉字
@@ -22,6 +73,32 @@
 #define T1M (1*1024*1024)
 #define T1K (1*1024)
 
+
+#if 0 //ok 2pic/s
+#define STREAM_PIC_FORT "PNG"
+#define SUFIXNAME       "png"
+#elif 0 //err
+#define STREAM_PIC_FORT "BMP"
+#define SUFIXNAME       "bmp"
+#elif 0  //ok, 6pic/s
+#define STREAM_PIC_FORT "JPG"
+#define SUFIXNAME       "jpg"
+#elif 1 //ok, 6pic/s
+#define STREAM_PIC_FORT "JPEG"
+#define SUFIXNAME       "jpeg"
+#elif 0 //err,size too little
+#define STREAM_PIC_FORT "GIF"
+#define SUFIXNAME       "gif"
+#elif 0 //err,too big
+#define STREAM_PIC_FORT "TIFF"
+#define SUFIXNAME       "tiff"
+#elif 1 //not show
+#define STREAM_PIC_FORT "PPM"
+#define SUFIXNAME       "ppm"
+#endif
+
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -37,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 //    showifconfig();
+    //保存log到文件
 //    installLogcatMessageHandler("ScreenCapture");
     if(Getifconfig().contains("192.168"))
     {
@@ -57,6 +135,14 @@ MainWindow::MainWindow(QWidget *parent) :
 //    connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(&tcpServer, SIGNAL(newConnection()),
             this, SLOT(acceptConnection()));
+
+
+    //ffmpeg info
+    av_register_all();
+//    avformat_network_init();
+    //Register Device
+    avdevice_register_all();
+    avcodec_register_all();
 }
 
 MainWindow::~MainWindow()
@@ -313,7 +399,7 @@ void MainWindow::updateServerProgress()
         }
         if((tcpServerConnection->bytesAvailable() >= fileNameSize)&&(fileNameSize !=0)){
             in>>fileName;
-            qDebug() << "filename:" <<fileName;
+            //qDebug() << "filename:" <<fileName;
 
             bytesReceived += fileNameSize;
             //            localFile = new QFile(fileName);
@@ -355,8 +441,8 @@ void MainWindow::updateServerProgress()
         localFile->write(inBlock);
         inBlock.resize(0);
 #endif
-        qDebug() << "bytesReceived:"<< bytesReceived;
-        qDebug() << "TotalBytes   :"<< TotalBytes;
+        //qDebug() << "bytesReceived:"<< bytesReceived;
+        //qDebug() << "TotalBytes   :"<< TotalBytes;
     }
 //    ui->serverProgressBar->setMaximum(TotalBytes);
 //    ui->serverProgressBar->setValue(bytesReceived);

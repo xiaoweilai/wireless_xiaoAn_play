@@ -36,14 +36,27 @@
    <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>160</y>
-      <width>201</width>
-      <height>121</height>
+      <x>60</x>
+      <y>10</y>
+      <width>101</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
      <string>Start</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="imageLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>100</y>
+      <width>761</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ImageLabel</string>
     </property>
    </widget>
   </widget>
