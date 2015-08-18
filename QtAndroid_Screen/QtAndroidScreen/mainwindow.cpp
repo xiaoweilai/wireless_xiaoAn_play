@@ -143,6 +143,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //Register Device
     avdevice_register_all();
     avcodec_register_all();
+//    avcodec_find_encoder(AV_CODEC_ID_H264);
+
 }
 
 MainWindow::~MainWindow()

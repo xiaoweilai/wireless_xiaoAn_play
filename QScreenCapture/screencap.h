@@ -107,6 +107,8 @@ private:
     void showTextClickToStart(void);
     void showTextClickOverToReStart(void);
     void showTextConnecting(void);
+    QString ReadIpAddr();
+    void SaveIpAddr(QString ipaddr);
     void BtnStartPix(void);
     void BtnStopPix(void);
     void BtnSetPix(QString str);

@@ -26,6 +26,14 @@
 
 #define NO_FIRST 1
 
+#if 1
+#define DEFAULT_HOSTADDR "192.168.1.101"
+#else
+#define DEFAULT_HOSTADDR "127.0.0.1"
+#endif
+#define DEFAULT_PORT   "16689"
+
+
 int ScreenCap::isStarted = STAT_STOPPED;
 unsigned int ScreenCap::mNo = NO_FIRST;
 
@@ -47,6 +55,7 @@ ScreenCap::ScreenCap(QWidget *parent) :
     ui->lineEditIp->setStyleSheet("QLineEdit{font: bold italic large \"Times New Roman\";font-size:25px;color:rgb(55,100,255);height:50px;border:4px solid rgb(155,200,33);background-color: rgba(0,0,0,30);border-radius:15px;selection-color:pink}");
     showAppVerion();
     BtnStartPix();
+    ui->lineEditIp->setText(ReadIpAddr());
     connect(ui->lineEditIp,SIGNAL(textChanged(QString)),this,SLOT(LineTextTips(QString)));
 
     pCapThread = NULL;
@@ -666,6 +675,9 @@ void ScreenCap::updateClientProgress(qint64 numBytes)
 int ScreenCap::CreateTcpSocket()
 {
     QString textIp = ui->lineEditIp->text();
+//    QString textIp = ReadIpAddr();
+//    ui->lineEditIp->setText(textIp);
+    SaveIpAddr(textIp);
 
     if(RET_SUCESS != WithNetworkInit(textIp))
     {
@@ -1192,4 +1204,60 @@ void ScreenCap::showTextConnecting(void)
 }
 
 
+/************************************************/
+/*函 数:ReadIpAddr                                */
+/*入 参:无                                        */
+/*出 参:无                                        */
+/*返 回:无                                        */
+/*功 能:读取ip地址                                 */
+/*author :wxj                                    */
+/*version:1.0                                    */
+/*时 间:2015.8.17                                 */
+/*************************************************/
+QString ScreenCap::ReadIpAddr()
+{
+    QFile file("./serverip.conf");
 
+    if(file.exists())
+    {
+        QByteArray dataFromFile;
+        QString ipaddr;
+        file.open(QIODevice::ReadOnly);
+        dataFromFile=file.readAll();
+        file.close();
+        qDebug() << "read ip:" << dataFromFile;
+        ipaddr = QString(dataFromFile);
+        qDebug() << "ipaddr :" << ipaddr;
+        return ipaddr;
+    }
+    else
+    {
+        file.open(QIODevice::WriteOnly);
+        file.write(DEFAULT_HOSTADDR);
+        file.close();
+        qDebug() << "read ip:" << DEFAULT_HOSTADDR;
+        return QString(DEFAULT_HOSTADDR);
+    }
+}
+
+/************************************************/
+/*函 数:SaveIpAddr                                */
+/*入 参:无                                        */
+/*出 参:无                                        */
+/*返 回:无                                        */
+/*功 能:保存ip地址                                 */
+/*author :wxj                                    */
+/*version:1.0                                    */
+/*时 间:2015.8.17                                 */
+/*************************************************/
+void ScreenCap::SaveIpAddr(QString ipaddr)
+{
+    QFile file("./serverip.conf");
+
+    if(file.exists())
+    {
+        file.open(QIODevice::WriteOnly);
+        file.write(ipaddr.toLocal8Bit());
+        file.close();
+    }
+}
