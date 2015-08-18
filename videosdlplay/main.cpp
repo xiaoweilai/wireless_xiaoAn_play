@@ -45,6 +45,11 @@ extern "C"
 #define SCREENSHOWHEIGHT  (pCodecCtx->height/2)
 
 
+
+void output_formatctx_info(AVFormatContext *pFormatCtx);
+
+
+
 #ifdef __MINGW32__
 #undef main /* Prevents SDL from overriding main() */
 #endif
@@ -96,7 +101,7 @@ int main(int argc, char *argv[])
         qDebug() << "Couldn't open file";
         return -1; // Couldn't open file
     }
-    output_formatctx_info(&pFormatCtx);
+    output_formatctx_info(pFormatCtx);
 
     // Retrieve stream information
 
