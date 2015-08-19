@@ -15,11 +15,13 @@ signals:
     
 public slots:
     void dealNums(qint64 ulnums);
+    void DelteMpgFile();
 protected:
     void run();
 
 private:
-    quint32 nums;
+    qint64 lRecvPktnums;//接收到的数据包
+    qint64 lPlayernums; // 播放的数据包
 };
 
 #endif // PLAYERTHREAD_H

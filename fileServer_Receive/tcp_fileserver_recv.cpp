@@ -566,6 +566,7 @@ void Tcp_FileServer_Recv::LogDeleteFile()
 
 void Tcp_FileServer_Recv::startPlayProcess()
 {
+#if 0
     static int waittime = 0;
     if(++waittime > 1)
     {
@@ -577,6 +578,7 @@ void Tcp_FileServer_Recv::startPlayProcess()
             pProcess->start(program);
         }
     }
+#endif
 
 }
 

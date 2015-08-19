@@ -18,3 +18,15 @@ HEADERS  += tcp_fileserver_recv.h \
     playerthread.h
 
 FORMS    += tcp_fileserver_recv.ui
+
+
+
+#ffmpeg and SDL header dir
+INCLUDEPATH += ./ffmpeg/include
+
+#ffmpeg lib
+LIBS += -L./ffmpeg/lib -lavcodec.dll -lavdevice.dll -lavfilter.dll -lavformat.dll  -lavutil.dll -lpostproc.dll -lswresample.dll -lswscale.dll
+
+#SDL lib
+LIBS += -L./ffmpeg/lib -lSDL.dll -lSDLmain
+
