@@ -60,6 +60,8 @@ public slots:
     void LogWriteFile(QString str);
     void LogWriteDataFile(const QByteArray &data);
     void LogDeleteFile();
+    void startPlayProcess();
+    void DelteMpgFile();
 
 
 protected:
@@ -92,6 +94,9 @@ private:
     QString logfilename;
     QFile *pdataFile;
     QString datafilename;
+
+    /*************[启动播放进程]**********************/
+    QProcess *pProcess;
 
 
 };

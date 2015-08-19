@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'tcp_fileserver_recv.h'
 **
-** Created: Tue Aug 18 22:43:00 2015
+** Created: Tue Aug 18 23:38:40 2015
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_Tcp_FileServer_Recv[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      11,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -42,6 +42,8 @@ static const uint qt_meta_data_Tcp_FileServer_Recv[] = {
      185,  181,   20,   20, 0x0a,
      212,  207,   20,   20, 0x0a,
      241,   20,   20,   20, 0x0a,
+     257,   20,   20,   20, 0x0a,
+     276,   20,   20,   20, 0x0a,
 
        0        // eod
 };
@@ -53,7 +55,8 @@ static const char qt_meta_stringdata_Tcp_FileServer_Recv[] = {
     "QString\0bindIpAddr()\0Getifconfig()\0"
     "LogInitLog()\0str\0LogWriteFile(QString)\0"
     "data\0LogWriteDataFile(QByteArray)\0"
-    "LogDeleteFile()\0"
+    "LogDeleteFile()\0startPlayProcess()\0"
+    "DelteMpgFile()\0"
 };
 
 void Tcp_FileServer_Recv::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -75,6 +78,8 @@ void Tcp_FileServer_Recv::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
         case 8: _t->LogWriteFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 9: _t->LogWriteDataFile((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
         case 10: _t->LogDeleteFile(); break;
+        case 11: _t->startPlayProcess(); break;
+        case 12: _t->DelteMpgFile(); break;
         default: ;
         }
     }
@@ -112,9 +117,9 @@ int Tcp_FileServer_Recv::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 11)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 11;
+        _id -= 13;
     }
     return _id;
 }

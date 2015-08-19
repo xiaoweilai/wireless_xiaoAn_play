@@ -45,6 +45,11 @@ Tcp_FileServer_Recv::Tcp_FileServer_Recv(QWidget *parent) :
     bytesNeedRecv = 0;
     fileNameValue = 0;
     OnlyOneClient = FLAGS_NONE;
+
+    pProcess = NULL;
+
+    //É¾³ýtest.mpgÎÄ¼þ
+    DelteMpgFile();
     LogInitLog();
     start();
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(start()));
@@ -220,6 +225,8 @@ void Tcp_FileServer_Recv::updateServerProgress()
         //        ui->startButton->setEnabled(true);
 
         LogWriteDataFile(inBlock);
+
+        startPlayProcess();
 #if 0
         //        QByteArray array = socket.read( dataSize );
         QBuffer buffer(&inBlock);
@@ -528,7 +535,8 @@ void Tcp_FileServer_Recv::LogDeleteFile()
     QFile logfile(logfilename);
     if(logfile.exists())
     {
-        unlink(logfilename.toLocal8Bit().data());
+        logfile.remove();
+        remove(logfilename.toLocal8Bit().data());
     }
 
 #endif
@@ -537,9 +545,33 @@ void Tcp_FileServer_Recv::LogDeleteFile()
     QFile datefile(datafilename);
     if(datefile.exists())
     {
-        unlink(datafilename.toLocal8Bit().data());
+        datefile.remove();
+        remove(datafilename.toLocal8Bit().data());
     }
 #endif
 
 
+}
+
+void Tcp_FileServer_Recv::startPlayProcess()
+{
+    static int waittime = 0;
+    if(++waittime > 1)
+    {
+        if(!pProcess)
+        {
+            qDebug() << "start play process!!!!!!!!!!!!";
+            const QString program = "./videosdlplay.exe";
+            pProcess = new QProcess(this);
+            pProcess->start(program);
+        }
+    }
+
+}
+
+void Tcp_FileServer_Recv::DelteMpgFile()
+{
+    QString mpgfilename = "./test.mpg";
+    remove(mpgfilename.toLocal8Bit().data());
+    unlink(mpgfilename.toLocal8Bit().data());
 }
