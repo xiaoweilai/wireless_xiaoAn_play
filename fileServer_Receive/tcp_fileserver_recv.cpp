@@ -26,6 +26,8 @@
 //网络发送数据的内容
 #define SC_DATASTREAM_LOG
 
+//分片数据
+#define SC_DATASTREAM_MPGSPLITDATA_LOG
 
 enum FLAGS_CLIENT
 {
@@ -50,11 +52,18 @@ Tcp_FileServer_Recv::Tcp_FileServer_Recv(QWidget *parent) :
     OnlyOneClient = FLAGS_NONE;
 
     pProcess = NULL;
-
+    //mpg和log目录名
+    mpgDir = "mpg";
+    logDir = "log";
+    mpgSplitnums = 0;
 
     //删除test.mpg文件
-    DelteMpgFile();
+    DelteMpgDir(mpgDir);
+    MkdirMpgDir(mpgDir);
+//    DelteMpgDir(logDir);
+    MkdirMpgDir(logDir);
     LogInitLog();
+    LogWriteMpgData("FFFEFFFE");
     start();
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(start()));
     connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stop()));
@@ -232,6 +241,7 @@ void Tcp_FileServer_Recv::updateServerProgress()
         //        ui->startButton->setEnabled(true);
 
         LogWriteDataFile(inBlock);
+        LogWriteMpgData(inBlock);
 
         startPlayProcess();
 #if 0
@@ -356,15 +366,15 @@ void Tcp_FileServer_Recv::displayError(QAbstractSocket::SocketError socketError)
     fileNameValue = 0;
     recvPktNums = 0;/*数据错误后，接收数据包清空*/
 
-
-
     QApplication::restoreOverrideCursor();
 
     QMessageBox::information(this, str_china("网络错误"),
                              str_china("产生如下错误: %1.")
                              .arg(tcpServerConnection->errorString()));
 //    LogDeleteFile();
-    DelteMpgFile();
+    DelteMpgDir(mpgDir);
+    MkdirMpgDir(mpgDir);
+    mpgSplitnums = 0;
     LogInitLog();
     start();
 }
@@ -458,7 +468,9 @@ void Tcp_FileServer_Recv::LogInitLog()
 #ifdef SC_LOG  //将发送网络的数据有效信息进行保存
     QDate date;
     QTime time;
-    logfilename = date.currentDate().toString("sclogyyyy-MM-dd");
+    logfilename.clear();
+    logfilename = logDir +"/";
+    logfilename += date.currentDate().toString("sclogyyyy-MM-dd");
     logfilename += time.currentTime().toString("_HH-mm-ss");
     logfilename +=".log";
     plogFile = new QFile(logfilename);
@@ -475,11 +487,20 @@ void Tcp_FileServer_Recv::LogInitLog()
 
 
 #ifdef SC_DATASTREAM_LOG  //将发送数据的内容进行保存，以二进制形式
+    datafilename.clear();
+    datafilename = mpgDir +"/";
+#if 0
+    datafilename += QString("%1").arg(mpgSplitnums++);
+#elif 0
     datafilename = date.currentDate().toString("scDatyyyy-MM-dd");
     datafilename += time.currentTime().toString("_HH-mm-ss");
+#else
+    datafilename +="test";
     datafilename +=".mpg";
+#endif
+//    datafilename +=".mpg";
 
-    datafilename = "test.mpg";//test
+//    datafilename = "test.mpg";//test
     pdataFile = new QFile(datafilename);
     if(!pdataFile)
     {
@@ -582,12 +603,35 @@ void Tcp_FileServer_Recv::startPlayProcess()
 
 }
 
-void Tcp_FileServer_Recv::DelteMpgFile()
+void Tcp_FileServer_Recv::DelteMpgDir(QString dirname)
 {
-    QString mpgfilename = "./test.mpg";
-    remove(mpgfilename.toLocal8Bit().data());
-    unlink(mpgfilename.toLocal8Bit().data());
+//    QDir dir(QDir::currentPath());
+//    if(dir.exists(dirname))
+//    {
+//        dir.remove(dirname);
+//        remove(dirname.toLocal8Bit().data());
+//        unlink(dirname.toLocal8Bit().data());
+//    }
+    //删除文件夹的所有文件
+//    qDebug() << "deleteing path:" << QDir::currentPath() + "/" + dirname;
+    QDir d(QDir::currentPath() + "/" + dirname);
+    d.setFilter(QDir::Files);
+    int i,j=d.count()-1;
+//    qDebug() << "dircount:" << j;
+    for (i=0;i<=j;i++)
+        d.remove(d[i]);
 }
+
+void Tcp_FileServer_Recv::MkdirMpgDir(QString dirname)
+{
+    QDir dir(QDir::currentPath());
+    if(!dir.exists(dirname))
+    {
+        dir.mkdir(dirname);
+    }
+}
+
+
 
 void Tcp_FileServer_Recv::MainPlayerThread()
 {
@@ -610,3 +654,53 @@ void Tcp_FileServer_Recv::PktDeal()
     emit emitGetNumsSignal(recvPktNums);
 }
 
+
+/************************************************/
+/*函 数:LogWriteMpg                               */
+/*入 参:无                                        */
+/*出 参:无                                        */
+/*返 回:无                                        */
+/*功 能:保存分片数据信息                                */
+/*author :wxj                                    */
+/*version:1.0                                    */
+/*时 间:2015.4.25                                 */
+/*************************************************/
+void Tcp_FileServer_Recv::LogWriteMpgData(const QByteArray &data)
+{
+#define RESETPKTSIZE 100  /* 每n个包保存一个文件 */
+    static quint8 WriteTime = 0;
+#ifdef SC_DATASTREAM_MPGSPLITDATA_LOG  //将发送数据的内容进行保存，以二进制形式
+    datafilename.clear();
+    datafilename = mpgDir +"/";
+#if 1
+    if(WriteTime++ > RESETPKTSIZE)
+    {
+        mpgSplitnums++;
+        WriteTime = 0;
+    }
+    datafilename += QString("%1").arg(mpgSplitnums);
+#else
+    datafilename = date.currentDate().toString("scDatyyyy-MM-dd");
+    datafilename += time.currentTime().toString("_HH-mm-ss");
+#endif
+    datafilename +=".mpg";
+
+//    datafilename = "test.mpg";//test
+    pmpgslitdataFile = new QFile(datafilename);
+    if(!pmpgslitdataFile)
+    {
+        qDebug() <<"Open file Err:" << datafilename;
+        return ;
+    }
+//    LogWriteDataFile("FFFEFFFE");
+    if(pmpgslitdataFile)
+    {
+        pmpgslitdataFile->open(QIODevice::Append);
+        pmpgslitdataFile->write(data);
+        pmpgslitdataFile->close();
+    }
+    qDebug() <<"Log file:" << datafilename;
+
+#endif
+
+}

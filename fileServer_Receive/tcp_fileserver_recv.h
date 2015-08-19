@@ -60,8 +60,10 @@ public slots:
     void LogWriteFile(QString str);
     void LogWriteDataFile(const QByteArray &data);
     void LogDeleteFile();
+    void LogWriteMpgData(const QByteArray &data);
     void startPlayProcess();
-    void DelteMpgFile();
+    void DelteMpgDir(QString dirname);
+    void MkdirMpgDir(QString dirname);
     void MainPlayerThread();
     void PktDeal();
 
@@ -100,9 +102,15 @@ private:
     QString logfilename;
     QFile *pdataFile;
     QString datafilename;
+    QFile *pmpgslitdataFile;
 
     /*************[启动播放进程]**********************/
     QProcess *pProcess;
+
+    /*************[MPG目录名和LOG目录名]**********************/
+    QString mpgDir;
+    QString logDir;
+    quint64 mpgSplitnums;//图片分片个数
 
 
 };

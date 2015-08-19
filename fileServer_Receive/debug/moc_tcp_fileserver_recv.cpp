@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'tcp_fileserver_recv.h'
 **
-** Created: Wed Aug 19 23:15:11 2015
+** Created: Thu Aug 20 00:49:21 2015
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_Tcp_FileServer_Recv[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      16,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -45,10 +45,12 @@ static const uint qt_meta_data_Tcp_FileServer_Recv[] = {
      211,  207,   20,   20, 0x0a,
      238,  233,   20,   20, 0x0a,
      267,   20,   20,   20, 0x0a,
-     283,   20,   20,   20, 0x0a,
-     302,   20,   20,   20, 0x0a,
-     317,   20,   20,   20, 0x0a,
-     336,   20,   20,   20, 0x0a,
+     283,  233,   20,   20, 0x0a,
+     311,   20,   20,   20, 0x0a,
+     338,  330,   20,   20, 0x0a,
+     359,  330,   20,   20, 0x0a,
+     380,   20,   20,   20, 0x0a,
+     399,   20,   20,   20, 0x0a,
 
        0        // eod
 };
@@ -61,9 +63,10 @@ static const char qt_meta_stringdata_Tcp_FileServer_Recv[] = {
     "QString\0bindIpAddr()\0Getifconfig()\0"
     "LogInitLog()\0str\0LogWriteFile(QString)\0"
     "data\0LogWriteDataFile(QByteArray)\0"
-    "LogDeleteFile()\0startPlayProcess()\0"
-    "DelteMpgFile()\0MainPlayerThread()\0"
-    "PktDeal()\0"
+    "LogDeleteFile()\0LogWriteMpgData(QByteArray)\0"
+    "startPlayProcess()\0dirname\0"
+    "DelteMpgDir(QString)\0MkdirMpgDir(QString)\0"
+    "MainPlayerThread()\0PktDeal()\0"
 };
 
 void Tcp_FileServer_Recv::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -86,10 +89,12 @@ void Tcp_FileServer_Recv::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
         case 9: _t->LogWriteFile((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 10: _t->LogWriteDataFile((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
         case 11: _t->LogDeleteFile(); break;
-        case 12: _t->startPlayProcess(); break;
-        case 13: _t->DelteMpgFile(); break;
-        case 14: _t->MainPlayerThread(); break;
-        case 15: _t->PktDeal(); break;
+        case 12: _t->LogWriteMpgData((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
+        case 13: _t->startPlayProcess(); break;
+        case 14: _t->DelteMpgDir((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 15: _t->MkdirMpgDir((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 16: _t->MainPlayerThread(); break;
+        case 17: _t->PktDeal(); break;
         default: ;
         }
     }
@@ -127,9 +132,9 @@ int Tcp_FileServer_Recv::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 18;
     }
     return _id;
 }
