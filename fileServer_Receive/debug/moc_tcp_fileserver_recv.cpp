@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'tcp_fileserver_recv.h'
 **
-** Created: Tue Aug 18 23:38:40 2015
+** Created: Wed Aug 19 22:33:38 2015
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_Tcp_FileServer_Recv[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      13,   14, // methods
+      15,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -44,6 +44,8 @@ static const uint qt_meta_data_Tcp_FileServer_Recv[] = {
      241,   20,   20,   20, 0x0a,
      257,   20,   20,   20, 0x0a,
      276,   20,   20,   20, 0x0a,
+     291,   20,   20,   20, 0x0a,
+     310,   20,   20,   20, 0x0a,
 
        0        // eod
 };
@@ -56,7 +58,8 @@ static const char qt_meta_stringdata_Tcp_FileServer_Recv[] = {
     "LogInitLog()\0str\0LogWriteFile(QString)\0"
     "data\0LogWriteDataFile(QByteArray)\0"
     "LogDeleteFile()\0startPlayProcess()\0"
-    "DelteMpgFile()\0"
+    "DelteMpgFile()\0MainPlayerThread()\0"
+    "PktDeal()\0"
 };
 
 void Tcp_FileServer_Recv::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -80,6 +83,8 @@ void Tcp_FileServer_Recv::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
         case 10: _t->LogDeleteFile(); break;
         case 11: _t->startPlayProcess(); break;
         case 12: _t->DelteMpgFile(); break;
+        case 13: _t->MainPlayerThread(); break;
+        case 14: _t->PktDeal(); break;
         default: ;
         }
     }
@@ -117,9 +122,9 @@ int Tcp_FileServer_Recv::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 13)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 13;
+        _id -= 15;
     }
     return _id;
 }

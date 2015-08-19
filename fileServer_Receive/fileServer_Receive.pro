@@ -11,8 +11,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        tcp_fileserver_recv.cpp
+        tcp_fileserver_recv.cpp \
+    playerthread.cpp
 
-HEADERS  += tcp_fileserver_recv.h
+HEADERS  += tcp_fileserver_recv.h \
+    playerthread.h
 
 FORMS    += tcp_fileserver_recv.ui

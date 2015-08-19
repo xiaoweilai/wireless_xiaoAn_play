@@ -62,6 +62,8 @@ public slots:
     void LogDeleteFile();
     void startPlayProcess();
     void DelteMpgFile();
+    void MainPlayerThread();
+    void PktDeal();
 
 
 protected:

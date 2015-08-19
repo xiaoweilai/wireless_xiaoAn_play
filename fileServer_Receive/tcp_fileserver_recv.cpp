@@ -3,6 +3,8 @@
 #include <QHostAddress>
 #include <QProcess>
 #include <QNetworkInterface>
+//#include "playvideo.h"
+#include "playerthread.h"
 
 #if 1
 //编码汉字
@@ -58,6 +60,9 @@ Tcp_FileServer_Recv::Tcp_FileServer_Recv(QWidget *parent) :
     connect(ui->quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(&tcpServer, SIGNAL(newConnection()),
             this, SLOT(acceptConnection()));
+
+    //启动播放线程
+    MainPlayerThread();
 }
 
 Tcp_FileServer_Recv::~Tcp_FileServer_Recv()
@@ -575,3 +580,16 @@ void Tcp_FileServer_Recv::DelteMpgFile()
     remove(mpgfilename.toLocal8Bit().data());
     unlink(mpgfilename.toLocal8Bit().data());
 }
+
+void Tcp_FileServer_Recv::MainPlayerThread()
+{
+    playerThread *pPlayer = new playerThread(this);
+    pPlayer->start();
+    QObject::connect(pPlayer,SIGNAL(emitMsgBoxSignal()),this,SLOT(PktDeal()));
+}
+
+void Tcp_FileServer_Recv::PktDeal()
+{
+    qDebug() << "deal packet!!";
+}
+
