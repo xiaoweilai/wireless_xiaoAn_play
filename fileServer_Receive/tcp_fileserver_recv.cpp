@@ -45,10 +45,12 @@ Tcp_FileServer_Recv::Tcp_FileServer_Recv(QWidget *parent) :
     bytesReceived = 0;
     fileNameSize = 0;
     bytesNeedRecv = 0;
+    recvPktNums = 0;
     fileNameValue = 0;
     OnlyOneClient = FLAGS_NONE;
 
     pProcess = NULL;
+
 
     //删除test.mpg文件
     DelteMpgFile();
@@ -160,7 +162,7 @@ void Tcp_FileServer_Recv::updateServerProgress()
             inBlock.resize(0);
 
             //debug
-            qDebug() << "Header Info:-----------------------";
+//            qDebug() << "Header Info:-----------------------";
 //            qDebug() << "TotalBytes :" << TotalBytes;
 //            qDebug() << "fileNameSize" << fileNameSize;
 //            qDebug() << "fileNameValue" << fileNameValue;
@@ -216,8 +218,8 @@ void Tcp_FileServer_Recv::updateServerProgress()
         localFile->write(inBlock);
         inBlock.resize(0);
 #endif
-        qDebug() << "bytesReceived:"<< bytesReceived;
-        qDebug() << "TotalBytes   :"<< TotalBytes;
+//        qDebug() << "bytesReceived:"<< bytesReceived;
+//        qDebug() << "TotalBytes   :"<< TotalBytes;
     }
     ui->serverProgressBar->setMaximum(TotalBytes);
     ui->serverProgressBar->setValue(bytesReceived);
@@ -260,6 +262,8 @@ void Tcp_FileServer_Recv::updateServerProgress()
         fileNameValue = 0;
 
         bytesNeedRecv = 0;
+
+        recvPktNums++;
 
 
 
@@ -350,6 +354,7 @@ void Tcp_FileServer_Recv::displayError(QAbstractSocket::SocketError socketError)
     bytesReceived = 0;
     fileNameSize = 0;
     fileNameValue = 0;
+    recvPktNums = 0;/*数据错误后，接收数据包清空*/
 
 
 
@@ -359,6 +364,7 @@ void Tcp_FileServer_Recv::displayError(QAbstractSocket::SocketError socketError)
                              str_china("产生如下错误: %1.")
                              .arg(tcpServerConnection->errorString()));
 //    LogDeleteFile();
+    DelteMpgFile();
     LogInitLog();
     start();
 }
@@ -586,10 +592,19 @@ void Tcp_FileServer_Recv::MainPlayerThread()
     playerThread *pPlayer = new playerThread(this);
     pPlayer->start();
     QObject::connect(pPlayer,SIGNAL(emitMsgBoxSignal()),this,SLOT(PktDeal()));
+    QObject::connect(ui->TerminateBtn,SIGNAL(clicked()),pPlayer,SLOT(terminate()));
+    QObject::connect(ui->StartBtn,SIGNAL(clicked()),pPlayer,SLOT(start()));
+//    pPlayer->killTimer(10);
+//    pPlayer->terminate();//线程停止
+
+    //主进程发给播放进程
+    connect(this,SIGNAL(emitGetNumsSignal(qint64)),pPlayer,SLOT(dealNums(qint64)));
 }
 
 void Tcp_FileServer_Recv::PktDeal()
 {
     qDebug() << "deal packet!!";
+//    static quint32 ulnums = 0;
+    emit emitGetNumsSignal(recvPktNums);
 }
 

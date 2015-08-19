@@ -65,6 +65,9 @@ public slots:
     void MainPlayerThread();
     void PktDeal();
 
+signals:
+    void emitGetNumsSignal(qint64);
+
 
 protected:
     quint8 getOnlyOneClient();
@@ -85,6 +88,7 @@ private:
     qint64  fileNameSize;  //头长度
     qint64  fileNameValue; //头内容
     qint64  bytesNeedRecv;
+    qint64  recvPktNums;//接收数据包数
     QString fileName;
     QFile *localFile;
     QByteArray inBlock;

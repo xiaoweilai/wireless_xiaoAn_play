@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'tcp_fileserver_recv.ui'
 **
-** Created: Wed Aug 19 22:24:46 2015
+** Created: Wed Aug 19 22:43:04 2015
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -39,6 +39,8 @@ public:
     QLabel *imageLabel;
     QLineEdit *lineEdit_ip;
     QPushButton *stopButton;
+    QPushButton *TerminateBtn;
+    QPushButton *StartBtn;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -76,10 +78,16 @@ public:
         stopButton = new QPushButton(centralWidget);
         stopButton->setObjectName(QString::fromUtf8("stopButton"));
         stopButton->setGeometry(QRect(140, 40, 71, 51));
+        TerminateBtn = new QPushButton(centralWidget);
+        TerminateBtn->setObjectName(QString::fromUtf8("TerminateBtn"));
+        TerminateBtn->setGeometry(QRect(20, 110, 91, 71));
+        StartBtn = new QPushButton(centralWidget);
+        StartBtn->setObjectName(QString::fromUtf8("StartBtn"));
+        StartBtn->setGeometry(QRect(140, 110, 91, 71));
         Tcp_FileServer_Recv->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(Tcp_FileServer_Recv);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1366, 23));
+        menuBar->setGeometry(QRect(0, 0, 1366, 22));
         Tcp_FileServer_Recv->setMenuBar(menuBar);
         mainToolBar = new QToolBar(Tcp_FileServer_Recv);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -102,6 +110,8 @@ public:
         imageLabel->setText(QString());
         lineEdit_ip->setText(QApplication::translate("Tcp_FileServer_Recv", "192.168.1.104", 0, QApplication::UnicodeUTF8));
         stopButton->setText(QApplication::translate("Tcp_FileServer_Recv", "\345\201\234\346\255\242", 0, QApplication::UnicodeUTF8));
+        TerminateBtn->setText(QApplication::translate("Tcp_FileServer_Recv", "Terminate", 0, QApplication::UnicodeUTF8));
+        StartBtn->setText(QApplication::translate("Tcp_FileServer_Recv", "Start", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
