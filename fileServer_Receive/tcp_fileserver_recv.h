@@ -70,6 +70,7 @@ public slots:
 signals:
     void emitGetNumsSignal(qint64);
     void emitPushPktSignal(QByteArray,quint32);
+    void emitPushFileNameSignal(QString);
 
 
 protected:
@@ -103,6 +104,7 @@ private:
     QString logfilename;
     QFile *pdataFile;
     QString datafilename;
+    QString senddatafilename;
     QFile *pmpgslitdataFile;
 
     /*************[启动播放进程]**********************/

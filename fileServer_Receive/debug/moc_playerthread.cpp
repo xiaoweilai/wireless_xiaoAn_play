@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'playerthread.h'
 **
-** Created: Thu Aug 20 22:46:30 2015
+** Created: Fri Aug 21 00:03:13 2015
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_playerThread[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       6,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -36,7 +36,9 @@ static const uint qt_meta_data_playerThread[] = {
  // slots: signature, parameters, type, tag, flags
       40,   33,   13,   13, 0x0a,
       66,   57,   13,   13, 0x0a,
-      94,   13,   13,   13, 0x0a,
+     103,   94,   13,   13, 0x0a,
+     129,   13,  125,   13, 0x0a,
+     150,   13,   13,   13, 0x0a,
 
        0        // eod
 };
@@ -44,7 +46,9 @@ static const uint qt_meta_data_playerThread[] = {
 static const char qt_meta_stringdata_playerThread[] = {
     "playerThread\0\0emitMsgBoxSignal()\0"
     "ulnums\0dealNums(qint64)\0pkt,size\0"
-    "recvPkt(QByteArray,quint32)\0DelteMpgFile()\0"
+    "recvPkt(QByteArray,quint32)\0filename\0"
+    "recvFileName(QString)\0int\0"
+    "GetFileNameArrSize()\0DelteMpgFile()\0"
 };
 
 void playerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -56,7 +60,10 @@ void playerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 0: _t->emitMsgBoxSignal(); break;
         case 1: _t->dealNums((*reinterpret_cast< qint64(*)>(_a[1]))); break;
         case 2: _t->recvPkt((*reinterpret_cast< QByteArray(*)>(_a[1])),(*reinterpret_cast< quint32(*)>(_a[2]))); break;
-        case 3: _t->DelteMpgFile(); break;
+        case 3: _t->recvFileName((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 4: { int _r = _t->GetFileNameArrSize();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
+        case 5: _t->DelteMpgFile(); break;
         default: ;
         }
     }
@@ -94,9 +101,9 @@ int playerThread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 6;
     }
     return _id;
 }

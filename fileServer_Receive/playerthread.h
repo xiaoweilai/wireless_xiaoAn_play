@@ -23,6 +23,8 @@ signals:
 public slots:
     void dealNums(qint64 ulnums);
     void recvPkt(QByteArray pkt, quint32 size);
+    void recvFileName(QString filename);
+    int GetFileNameArrSize();
     void DelteMpgFile();
 protected:
     void run();
@@ -40,6 +42,8 @@ private:
     QVector<QByteArray> Pktarry;
     QVector<quint32> Pktsizearry;
 
+    /*************[保存收到文件名称]**********************/
+    QVector<QString> fileNameArry;
 };
 
 #endif // PLAYERTHREAD_H

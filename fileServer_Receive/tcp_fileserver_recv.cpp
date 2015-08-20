@@ -247,9 +247,9 @@ void Tcp_FileServer_Recv::updateServerProgress()
         LogWriteDataFile(inBlock);
         LogWriteMpgData(inBlock);
 //        pktarry.append(inBlock);
-        //直接发送走吧
-        emit emitPushPktSignal(inBlock, inBlock.size());
-        LogWriteFile(QString("-->>Pkt Arry size:%1\n").arg(pktarry.size()));
+//        //直接发送走吧,发送分片数据
+//        emit emitPushPktSignal(inBlock, inBlock.size());
+//        LogWriteFile(QString("-->>Pkt Arry size:%1\n").arg(pktarry.size()));
 
         startPlayProcess();
 #if 0
@@ -655,6 +655,7 @@ void Tcp_FileServer_Recv::MainPlayerThread()
     //主进程发给播放进程
     connect(this,SIGNAL(emitGetNumsSignal(qint64)),pPlayer,SLOT(dealNums(qint64)));
     connect(this,SIGNAL(emitPushPktSignal(QByteArray,quint32)), pPlayer, SLOT(recvPkt(QByteArray,quint32)));
+    connect(this,SIGNAL(emitPushFileNameSignal(QString)), pPlayer,SLOT(recvFileName(QString)));
 }
 
 void Tcp_FileServer_Recv::PktDeal()
@@ -692,6 +693,7 @@ void Tcp_FileServer_Recv::LogWriteMpgData(const QByteArray &data)
     {
         mpgSplitnums++;
         WriteTime = 0;
+        emit emitPushFileNameSignal(senddatafilename);
     }
     datafilename += QString("%1").arg(mpgSplitnums);
 #else
@@ -699,6 +701,8 @@ void Tcp_FileServer_Recv::LogWriteMpgData(const QByteArray &data)
     datafilename += time.currentTime().toString("_HH-mm-ss");
 #endif
     datafilename +=".mpg";
+
+    senddatafilename = datafilename;
 
 //    datafilename = "test.mpg";//test
     pmpgslitdataFile = new QFile(datafilename);

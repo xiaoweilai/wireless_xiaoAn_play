@@ -264,9 +264,10 @@ playerThread::playerThread(QObject *parent) :
     LogInitLog();
     Pktarry.clear();
     Pktsizearry.clear();
+    fileNameArry.clear();
 }
 
-#if 1
+#if 0  /* 解析数据包 */
 void playerThread::run()
 {
     while(1)
@@ -580,6 +581,278 @@ void playerThread::run()
         //        }
     }
 }
+#elif 1  /* 数据分片播放 */
+void playerThread::run()
+{
+    while(1)
+    {
+        if(0 == GetFileNameArrSize())
+        {
+            lPlayernums = 0;
+            LogWriteFile("GetFileNameArrSize 0!!\n");
+            SDL_Delay(50);
+        }
+
+        static quint8 isStarted = TRUE;
+        if(GetFileNameArrSize() > 0 )
+        {
+            AVFormatContext *pFormatCtx;
+            int             i, videoStream;
+            AVCodecContext  *pCodecCtx;
+            AVCodec         *pCodec;
+            AVFrame         *pFrame;
+            AVPacket        packet;
+            int             frameFinished;
+            float           aspect_ratio;
+            static struct   SwsContext *img_convert_ctx;
+            static int sws_flags = SWS_BICUBIC;
+            SDL_Overlay     *bmp;
+            SDL_Surface     *screen;
+            SDL_Rect        rect;
+            SDL_Event       event;
+            const char* WINDOW_TITLE = "SDL Player";
+
+            if(isStarted)
+            {
+                av_register_all();
+                //    avformat_network_init();
+                //    avdevice_register_all();
+                //    avcodec_register_all();
+
+                pFormatCtx = avformat_alloc_context();
+                if(NULL == pFormatCtx)
+                {
+                    qDebug() << "Couldn't open pFormatCtx";
+                    LogWriteFile("Couldn't open pFormatCtx");
+                    //                return -1; // Couldn't open pFormatCtx
+                }
+
+                //    avformat_get_context_defaults
+                //    avformat_get_context_defaults(pFormatCtx);
+
+
+                if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
+                    fprintf(stderr, "Could not initialize SDL - %s\n", SDL_GetError());
+                    LogWriteFile(QString( "Could not initialize SDL - %s\n").arg(SDL_GetError()));
+                    //                exit(1);
+                    continue;
+                }
+
+                QString filename = fileNameArry.at(0);
+                LogWriteFile(QString("preparing play file:%1").arg(filename));
+                // Open video file
+                if(avformat_open_input(&pFormatCtx, filename.toLocal8Bit().data(), NULL,  NULL)!=0)
+                {
+                    qDebug() << "Couldn't open file";
+                    LogWriteFile( "Couldn't open file\n");
+                    //                return -1; // Couldn't open file
+                    SDL_Delay(30);
+                    continue;
+                }
+                output_formatctx_info(pFormatCtx);
+
+                // Retrieve stream information
+
+                if(avformat_find_stream_info(pFormatCtx, NULL)<0)
+                    //                return -1; // Couldn't find stream information
+                    continue;
+
+                // Dump information about file onto standard error
+                //    dump_format(pFormatCtx, 0, "D:\\Flyhigh.wmv", 0);
+
+                // Find the first video stream
+                videoStream=-1;
+                for(i=0; i<pFormatCtx->nb_streams; i++)
+                    if(pFormatCtx->streams[i]->codec->codec_type==AVMEDIA_TYPE_VIDEO) {
+                        videoStream=i;
+                        LogWriteFile(QString("videoStream:%1\n").arg(videoStream));
+                        qDebug() << "here break 1\n";
+                        LogWriteFile( "here break 1\n");
+                        break;
+                    }
+                if(videoStream==-1)
+                    //                return -1; // Didn't find a video stream
+                    continue;
+
+                // Get a pointer to the codec context for the video stream
+                pCodecCtx=pFormatCtx->streams[videoStream]->codec;
+//                LogWriteFile(QString("videoStream:%d\n").arg(videoStream));
+
+
+                // Find the decoder for the video stream
+                pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
+                if(pCodec==NULL) {
+                    fprintf(stderr, "Unsupported codec!\n");
+                    LogWriteFile( "Unsupported codec!\n");
+                    //                return -1; // Codec not found
+                    continue;
+                }
+
+                // Open codec
+                if(avcodec_open2(pCodecCtx, pCodec, NULL)<0)
+                    //                return -1; // Could not open codec
+                    continue;
+
+                // Allocate video frame
+                pFrame=avcodec_alloc_frame();
+
+                // Make a screen to put our video
+#ifndef __DARWIN__
+                screen = SDL_SetVideoMode(SCREENSHOWWIDTH, SCREENSHOWHEIGHT, 0, SDL_HWSURFACE | SDL_DOUBLEBUF );
+#else
+                screen = SDL_SetVideoMode(pCodecCtx->width, pCodecCtx->height, 24, 0);
+#endif
+                if(!screen) {
+                    fprintf(stderr, "SDL: could not set video mode - exiting\n");
+                    LogWriteFile( "SDL: could not set video mode - exiting\n");
+                    exit(1);
+                }
+                //SDL标题
+                SDL_WM_SetCaption( WINDOW_TITLE, 0 );
+
+                // Allocate a place to put our YUV image on that screen
+                bmp = SDL_CreateYUVOverlay(pCodecCtx->width,
+                                           pCodecCtx->height,
+                                           SDL_YV12_OVERLAY,
+                                           screen);
+
+                // Read frames and save first five frames to disk
+                i=0;
+
+                isStarted = FALSE;
+            }
+//            isStarted = FALSE;
+
+            while(1) {
+                int ret = av_read_frame(pFormatCtx, &packet);
+                if(ret < 0)
+                {
+                    qDebug() << "read frame rest:" << ret;
+                    LogWriteFile(QString( "read frame rest:%1\n").arg(ret));
+//                    SDL_Delay(30);
+//                    continue;
+                    break;
+                }
+
+
+                //                if(nums)
+//FF_INPUT_BUFFER_PADDING_SIZE
+                // Is this a packet from the video stream?
+                if(packet.stream_index==videoStream) {
+                    // Decode video frame
+                    avcodec_decode_video2(pCodecCtx, pFrame, &frameFinished,
+                                          &packet);
+                    // Did we get a video frame?
+                    if(frameFinished) {
+                        SDL_LockYUVOverlay(bmp);
+                        AVPicture *pict;
+                        pict = new AVPicture;
+                        pict->data[0] = bmp->pixels[0];
+                        pict->data[1] = bmp->pixels[2];
+                        pict->data[2] = bmp->pixels[1];
+
+                        pict->linesize[0] = bmp->pitches[0];
+                        pict->linesize[1] = bmp->pitches[2];
+                        pict->linesize[2] = bmp->pitches[1];
+
+                        // Convert the image into YUV format that SDL uses
+                        if (pCodecCtx->pix_fmt == PIX_FMT_YUV420P) {
+                            /* as we only generate a YUV420P picture, we must convert it
+                                to the codec pixel format if needed */
+                            img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height,
+                                                             pCodecCtx->pix_fmt,
+                                                             SCREENSHOWWIDTH, SCREENSHOWHEIGHT,
+                                                             PIX_FMT_YUV420P,
+                                                             sws_flags, NULL, NULL, NULL);
+                            if (img_convert_ctx == NULL) {
+                                fprintf(stderr, "Cannot initialize the conversion context\n");
+                                exit(1);
+                            }
+                            sws_scale(img_convert_ctx, pFrame->data, pFrame->linesize,
+                                      0, pCodecCtx->height, pict->data, pict->linesize);
+                        }
+                        //                    img_convert(&pict, PIX_FMT_YUV420P,
+                        //                                (AVPicture *)pFrame, pCodecCtx->pix_fmt,
+                        //                                pCodecCtx->width, pCodecCtx->height);
+                        SDL_UnlockYUVOverlay(bmp);
+                        rect.x = 0;
+                        rect.y = 0;
+                        rect.w = pCodecCtx->width;
+                        rect.h = pCodecCtx->height;
+                        SDL_DisplayYUVOverlay(bmp, &rect);
+                    }
+                }
+
+                // Free the packet that was allocated by av_read_frame
+                av_free_packet(&packet);
+//                SDL_PollEvent(&event);
+//                switch(event.type)
+//                {
+//                case SDL_QUIT:
+//                    SDL_Quit();
+//                    exit(0);
+//                    qDebug() << "here break 2";
+//                    break;
+//                default:
+//                    qDebug() << "here break 3";
+//                    break;
+//                }
+
+                qDebug() << "lRecvPktnums - lPlayernums nums:" << lRecvPktnums - lPlayernums;
+                qDebug() << "lRecvPktnums nums:" << lRecvPktnums;
+                qDebug() << "lPlayernums  nums:" << lPlayernums;
+                //        Sleep(30);
+                if(GetFileNameArrSize() > 10 )
+                {
+                    SDL_Delay(30);
+                }
+                else if(GetFileNameArrSize() > 3 )
+                {
+                    SDL_Delay(40);
+                }
+                else if(0 == GetFileNameArrSize())
+                {
+                    DelteMpgFile();
+                    SDL_Delay(50);
+                    continue;
+                }
+                else
+                {
+                    SDL_Delay(50);
+                }
+                //                SDL_Delay(40);
+
+                emit emitMsgBoxSignal();
+                lPlayernums++;
+            }
+            // Free the YUV frame
+            av_free(pFrame);
+
+            // Close the codec
+            avcodec_close(pCodecCtx);
+
+            // Close the video file
+            avformat_close_input(&pFormatCtx);
+
+            LogWriteFile(QString("remove play file:%1").arg(fileNameArry.at(0)));
+            fileNameArry.remove(0);
+            isStarted = TRUE;
+        }
+
+
+        //        qDebug() << "emit signal.....";
+        qDebug() << "current nums:" << lRecvPktnums;
+        emit emitMsgBoxSignal();
+        Sleep(100);
+        //        static quint8 started = TRUE;
+        //        if(nums > 3 && started)
+        //        {
+        //            qDebug() << "start player!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+        //            runPlayer();
+        //            started = FALSE;
+        //        }
+    }
+}
 #else
 void playerThread::run()
 {
@@ -863,7 +1136,18 @@ void playerThread::recvPkt(QByteArray pkt, quint32 size)
     LogWriteFile(QString("==player pkt         size:%1\n").arg(size));
 }
 
+void playerThread::recvFileName(QString filename)
+{
+    fileNameArry.append(filename);
+    LogWriteFile("Recv File Info:-------------------\n");
+    LogWriteFile(QString("filenameArray Size:%1\n").arg(fileNameArry.size()));
+    LogWriteFile(QString("filename          :%1\n").arg(filename));
+}
 
+int playerThread::GetFileNameArrSize()
+{
+    return fileNameArry.size();
+}
 
 void playerThread::DelteMpgFile()
 {
