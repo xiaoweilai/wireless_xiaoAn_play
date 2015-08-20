@@ -3,6 +3,10 @@
 
 #include <QThread>
 #include <QtGui>
+#include <QFile>
+#include <QDate>
+#include <QTime>
+
 
 class playerThread : public QThread
 {
@@ -10,11 +14,15 @@ class playerThread : public QThread
 public:
     explicit playerThread(QObject *parent = 0);
 
+    void LogInitLog();
+    void LogWriteFile(QString str);
+
 signals:
     void emitMsgBoxSignal();
     
 public slots:
     void dealNums(qint64 ulnums);
+    void recvPkt(QByteArray pkt, quint32 size);
     void DelteMpgFile();
 protected:
     void run();
@@ -22,6 +30,16 @@ protected:
 private:
     qint64 lRecvPktnums;//接收到的数据包
     qint64 lPlayernums; // 播放的数据包
+
+
+    /*************[保存log]**********************/
+    QFile *plogFile;
+    QString logfilename;
+
+    /*************[保存收到的数据包 数据及大小]**********************/
+    QVector<QByteArray> Pktarry;
+    QVector<quint32> Pktsizearry;
+
 };
 
 #endif // PLAYERTHREAD_H

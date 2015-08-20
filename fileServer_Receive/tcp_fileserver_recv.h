@@ -69,6 +69,7 @@ public slots:
 
 signals:
     void emitGetNumsSignal(qint64);
+    void emitPushPktSignal(QByteArray,quint32);
 
 
 protected:
@@ -112,7 +113,8 @@ private:
     QString logDir;
     quint64 mpgSplitnums;//图片分片个数
 
-
+    /*************[传送的数据包]**********************/
+    QVector<QByteArray> pktarry;
 };
 
 #endif // TCP_FILESERVER_RECV_H

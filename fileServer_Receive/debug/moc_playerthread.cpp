@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'playerthread.h'
 **
-** Created: Wed Aug 19 23:54:12 2015
+** Created: Thu Aug 20 22:46:30 2015
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_playerThread[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -35,14 +35,16 @@ static const uint qt_meta_data_playerThread[] = {
 
  // slots: signature, parameters, type, tag, flags
       40,   33,   13,   13, 0x0a,
-      57,   13,   13,   13, 0x0a,
+      66,   57,   13,   13, 0x0a,
+      94,   13,   13,   13, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_playerThread[] = {
     "playerThread\0\0emitMsgBoxSignal()\0"
-    "ulnums\0dealNums(qint64)\0DelteMpgFile()\0"
+    "ulnums\0dealNums(qint64)\0pkt,size\0"
+    "recvPkt(QByteArray,quint32)\0DelteMpgFile()\0"
 };
 
 void playerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -53,7 +55,8 @@ void playerThread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         switch (_id) {
         case 0: _t->emitMsgBoxSignal(); break;
         case 1: _t->dealNums((*reinterpret_cast< qint64(*)>(_a[1]))); break;
-        case 2: _t->DelteMpgFile(); break;
+        case 2: _t->recvPkt((*reinterpret_cast< QByteArray(*)>(_a[1])),(*reinterpret_cast< quint32(*)>(_a[2]))); break;
+        case 3: _t->DelteMpgFile(); break;
         default: ;
         }
     }
@@ -91,9 +94,9 @@ int playerThread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 4)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
 }

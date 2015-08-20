@@ -57,6 +57,8 @@ Tcp_FileServer_Recv::Tcp_FileServer_Recv(QWidget *parent) :
     logDir = "log";
     mpgSplitnums = 0;
 
+    pktarry.clear();
+
     //删除test.mpg文件
     DelteMpgDir(mpgDir);
     MkdirMpgDir(mpgDir);
@@ -176,9 +178,11 @@ void Tcp_FileServer_Recv::updateServerProgress()
 //            qDebug() << "fileNameSize" << fileNameSize;
 //            qDebug() << "fileNameValue" << fileNameValue;
             LogWriteFile("Header Info:-----------------------\n");
-            LogWriteFile("TotalBytes :"    + QString("%1").arg(TotalBytes) + "\n");
+            LogWriteFile("TotalBytes    :"    + QString("%1").arg(TotalBytes) + "\n");
             LogWriteFile("fileNameValue :" + QString("%1").arg(fileNameSize) + "\n");
-            LogWriteFile("fileNameValue :" + QString("%1").arg(fileNameValue) + "\n");
+//            LogWriteFile("fileNameValue :" + QString("%1").arg(fileNameValue) + "\n");
+//            QString::number(textEdit->text().trimmed().toInt(), 16);
+            LogWriteFile("fileNameValue :" + QString("0x%1").arg(QString::number(fileNameValue, 16).toUpper()) + "\n");
         }
 
 #if 0 // 获取文件名
@@ -242,6 +246,10 @@ void Tcp_FileServer_Recv::updateServerProgress()
 
         LogWriteDataFile(inBlock);
         LogWriteMpgData(inBlock);
+//        pktarry.append(inBlock);
+        //直接发送走吧
+        emit emitPushPktSignal(inBlock, inBlock.size());
+        LogWriteFile(QString("-->>Pkt Arry size:%1\n").arg(pktarry.size()));
 
         startPlayProcess();
 #if 0
@@ -375,6 +383,7 @@ void Tcp_FileServer_Recv::displayError(QAbstractSocket::SocketError socketError)
     DelteMpgDir(mpgDir);
     MkdirMpgDir(mpgDir);
     mpgSplitnums = 0;
+    pktarry.clear();
     LogInitLog();
     start();
 }
@@ -645,6 +654,7 @@ void Tcp_FileServer_Recv::MainPlayerThread()
 
     //主进程发给播放进程
     connect(this,SIGNAL(emitGetNumsSignal(qint64)),pPlayer,SLOT(dealNums(qint64)));
+    connect(this,SIGNAL(emitPushPktSignal(QByteArray,quint32)), pPlayer, SLOT(recvPkt(QByteArray,quint32)));
 }
 
 void Tcp_FileServer_Recv::PktDeal()
@@ -652,6 +662,11 @@ void Tcp_FileServer_Recv::PktDeal()
     qDebug() << "deal packet!!";
 //    static quint32 ulnums = 0;
     emit emitGetNumsSignal(recvPktNums);
+//    if(pktarry.size() > 0)
+//    {
+//        emit emitPushPktSignal(pktarry.at(0));
+//        pktarry.remove(0);
+//    }
 }
 
 
